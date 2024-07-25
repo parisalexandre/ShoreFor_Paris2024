@@ -1,0 +1,86 @@
+# DAKOTA INPUT FILE: dakota.in for parallel Evaluation Tiling
+# with OpenMPI
+
+environment,
+	tabular_graphics_data
+	results_output
+
+method,
+  coliny_ea
+    max_iterations = 1000
+    max_function_evaluations = 10000
+    seed = 11011011
+    population_size = 10000
+    fitness_type merit_function
+    mutation_type offset_normal
+    mutation_rate 1.0
+    crossover_type two_point
+    crossover_rate 0.0
+    replacement_type chc = 10
+    #solution_target = 0.1
+
+model
+  single
+#method
+#  conmin_frcg
+#    convergence_tolerance = 1e-7
+#    max_iterations = 100
+
+variables
+  continuous_design = 3
+    initial_point    0.0        0.1        350.0                                
+    lower_bounds    -0.01        0.01        300                                
+    upper_bounds    0.01        0.1        400                                
+    descriptors       "b"     "c"      "phi"
+
+# Run Dakota in serial launching M=8 asynchronous local jobs, which each run in
+# parallel. mpirun's -host option with a relative node list is used to land 
+# jobs on available nodes.
+interface,
+	fork,
+	  asynchronous 
+	  # evaluation_concurrency must be consistent with the job submission 
+	  # script and analysis driver. Specifically,
+	  # evaluation_concurrency = num_nodes * tasks_per_node / applic_procs
+	  # Where:
+	  # num_nodes = total number of nodes in the allocation (4 in this example)
+	  # tasks_per_node = number of tasks per node (also 4, here)
+	  # applic_procs = number of MPI tasks (processes) per simulation (2, here)
+	  evaluation_concurrency = 10
+
+	  ## Direct Dakota to launch evaluation using static scheduling.
+          # This guarantees that evaluations are replaced with evaluations
+          # modulo the evaluation concurrency. For the two dynamic
+          # scheduling cases, this may be commented out.
+
+          local_evaluation_scheduling static
+	  
+          ## Uncomment one of these analysis drivers. All of these examples
+          # require OpenMPI. The examples that use dipy and mpitile require
+          # SLURM (i.e. you use sbatch to submit jobs to the queue). Let us
+          # know if you'd like to see support for other resource managers.
+          #analysis_driver = 'text_book_bash_static.sh'
+          analysis_driver = 'text_book_bash.sh'
+          #analysis_driver = 'text_book_mpitile_dynamic.sh'
+          
+	    parameters_file = 'params.in'
+	    results_file = 'results.out'
+            # The static scheduling script depends on file_tagging
+	    file_tag
+	    file_save
+            # Use tagged work directories to keep the evaluations' results
+            # separate from one another.
+            work_directory named 'workdir'
+            directory_tag directory_save
+
+responses,
+	descriptors 'RMSE' #'BSS'
+	objective_functions 1
+	#num_objective_functions = 1
+	#descriptors 'RMSE'
+        numerical_gradients
+        method_source dakota
+        interval_type central
+        fd_step_size = 1.0
+        no_hessians
+
