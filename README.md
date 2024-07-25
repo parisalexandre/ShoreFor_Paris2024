@@ -21,7 +21,7 @@ The [**examples**](./examples/) directory contains two input files for the Truc 
 
 For example by running:
 ```
-git clone https://gricad-gitlab.univ-grenoble-alpes.fr/mepels/ShoreFor.git
+git clone https://github.com/parisalexandre/ShoreFor_Paris2024.git
 ```
 
 ### Set up the environment

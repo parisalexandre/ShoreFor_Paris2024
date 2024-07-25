@@ -80,7 +80,10 @@ def shorecore(bopti, copti, ratio_erosion, fff_minus, fff_plus,
     nearest = find_nearest(np.asarray(times), value=tzero)
     loc = np.where(times==nearest)[0]
     if evolution == 'shoreline':
-        shoreline[0] = loopw(data, loc)
+        if loc[0] == 0:
+            shoreline[0] = data[loc]
+        else:
+            shoreline[0] = loopw(data, loc)
     elif evolution == 'bars':
         shoreline[0] = data[loc]
 
