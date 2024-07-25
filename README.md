@@ -9,11 +9,11 @@ ShoreFor is based on an equation that contains three parameters that are calibra
 
 The user only needs to modify the configuration file `config_shorefor.yaml`.
 
-The [**examples**](./examples/) directory contains two input files for the Truc Vert (France) beach:
+The [**examples**](./examples/) directory contains two input files for the Duck (North Carolina, USA) beach:
 
-- [`Shoreline_1.5.dat`](./examples/Shoreline_1.5.dat), the survey data;
+- [`shoreline_duck_2000-2022.csv`](./examples/shoreline_duck_2000-2022.csv), the survey data;
 
-- [`TrucVert_Forcing.dat`](./examples/TrucVert_Forcing.dat), the forcing data.
+- [`forcing_duck_daily_8m_1990-2022.dat`](./examples/forcing_duck_daily_8m_1990-2022.dat), the forcing data.
 
 ## Installation and usage
 
